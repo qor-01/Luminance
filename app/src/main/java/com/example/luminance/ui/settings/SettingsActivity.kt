@@ -1,6 +1,7 @@
 package com.example.luminance.ui.settings
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -15,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import java.util.Locale
 import android.os.VibratorManager
 import android.os.Build
+import com.example.luminance.ui.vision.VisionActivity
 
 /**
  * SettingsActivity
@@ -71,6 +73,7 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         setupSoundToggle()    // ST-004
         setupVibrationToggle()// ST-005
         setupResetButton()    // ST-006
+        setupBottomNav()
     }
 
     override fun onDestroy() {
@@ -260,5 +263,28 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         if (ttsReady) tts.setSpeechRate(1.0f)
 
         Snackbar.make(binding.root, "모든 설정이 초기화되었습니다.", Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun setupBottomNav() {
+        binding.bottomNav.selectedItemId = R.id.nav_settings
+
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_vision -> {
+                    startActivity(
+                        Intent(this,
+                        VisionActivity::class.java)
+                    )
+                    false
+                }
+                R.id.nav_hazard -> {
+                    startActivity(Intent(this,
+                        com.example.luminance.ui.hazard.HazardActivity::class.java))
+                    false
+                }
+                R.id.nav_settings -> true
+                else -> false
+            }
+        }
     }
 }
