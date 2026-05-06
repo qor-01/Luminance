@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".MainActivity" />
         <activity android:name=".ui.hazard.HazardActivity" />
         <activity android:name=".ui.vision.VisionActivity" />
 
