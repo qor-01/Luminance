@@ -6,7 +6,7 @@
     <application
         android:allowBackup="true"
         android:label="Luminance"
-        android:theme="@style/Theme.Luminance_PJS">
+        android:theme="@style/Theme.Luminance">
 
         <activity
             android:name=".ui.settings.SettingsActivity"

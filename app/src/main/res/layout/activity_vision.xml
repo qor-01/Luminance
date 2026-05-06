@@ -9,19 +9,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    카메라 프리뷰 (CameraX)
+    <!--카메라 프리뷰 (CameraX)-->
     <androidx.camera.view.PreviewView
         android:id="@+id/cameraPreview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    오버레이 레이어 (탐지 박스 그리기용 커스텀뷰)
+    <!--오버레이 레이어 (탐지 박스 그리기용 커스텀뷰)-->
     <com.example.luminance.ui.DetectionOverlayView
         android:id="@+id/detectionOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    상단 앱바 (반투명 오버레이)
+    <!--상단 앱바 (반투명 오버레이)-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
@@ -56,7 +56,7 @@
             app:tint="#FFFFFF" />
     </LinearLayout>
 
-    실시간 탐지 칩
+    <!--실시간 탐지 칩-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -131,9 +131,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="#CCFFFFFF"
-        app:menu="@menu/bottom_nav_menu"
-        app:selectedItemColor="#0059BA"
-        app:unselectedItemColor="#6B7280" />
+        app:menu="@menu/bottom_nav_menu" />
 
     FAB 마이크
     <com.google.android.material.floatingactionbutton.FloatingActionButton

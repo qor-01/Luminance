@@ -271,8 +271,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="#F8F9FA"
-        app:menu="@menu/bottom_nav_menu"
-        app:selectedItemColor="#0059BA"
-        app:unselectedItemColor="#6B7280" />
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
