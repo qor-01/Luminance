@@ -16,7 +16,9 @@ import com.google.android.material.snackbar.Snackbar
 import java.util.Locale
 import android.os.VibratorManager
 import android.os.Build
+import com.example.luminance.ui.hazard.HazardActivity
 import com.example.luminance.ui.vision.VisionActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**
  * SettingsActivity
@@ -265,24 +267,47 @@ class SettingsActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         Snackbar.make(binding.root, "모든 설정이 초기화되었습니다.", Snackbar.LENGTH_SHORT).show()
     }
 
+    // ── 하단 네비게이션 ─────────────────────────────────────────
+    /**
+     * 핵심 수정 포인트:
+     * - 각 Activity에서 setSelectedItemId()로 현재 탭을 표시
+     * - Intent에 FLAG_ACTIVITY_REORDER_TO_FRONT 사용 → 백스택 중복 방지
+     * - HazardActivity 자신 탭은 아무 동작 안 함 (중복 생성 방지)
+     */
     private fun setupBottomNav() {
-        binding.bottomNav.selectedItemId = R.id.nav_settings
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
 
-        binding.bottomNav.setOnItemSelectedListener { item ->
+        // 현재 화면 탭 선택 표시
+        bottomNav.selectedItemId = R.id.nav_settings
+
+        bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
+                R.id.nav_hazard -> {
+                    startActivity(
+                        Intent(this, HazardActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                        }
+                    )
+                    true
+                }
                 R.id.nav_vision -> {
                     startActivity(
-                        Intent(this,
-                        VisionActivity::class.java)
+                        Intent(this, VisionActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                        }
                     )
-                    false
+                    overridePendingTransition(0, 0) // 탭 전환 애니메이션 제거
+                    true
                 }
-                R.id.nav_hazard -> {
-                    startActivity(Intent(this,
-                        com.example.luminance.ui.hazard.HazardActivity::class.java))
-                    false
+                R.id.nav_settings -> {
+                    startActivity(
+                        Intent(this, SettingsActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                        }
+                    )
+                    overridePendingTransition(0, 0)
+                    true
                 }
-                R.id.nav_settings -> true
                 else -> false
             }
         }

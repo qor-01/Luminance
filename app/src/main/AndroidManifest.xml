@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- 권한 -->
     <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
         android:label="Luminance"
         android:theme="@style/Theme.Luminance">
 
+        <activity android:name=".ui.settings.SettingsActivity" />
+
         <activity
-            android:name=".ui.settings.SettingsActivity"
+            android:name=".ui.vision.VisionActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity android:name=".MainActivity" />
+
         <activity android:name=".ui.hazard.HazardActivity" />
-        <activity android:name=".ui.vision.VisionActivity" />
 
     </application>
 

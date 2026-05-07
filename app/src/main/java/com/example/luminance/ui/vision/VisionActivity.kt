@@ -1,9 +1,22 @@
 package com.example.luminance.ui.vision
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import com.example.luminance.R
 import com.example.luminance.databinding.ActivityVisionBinding
+import com.example.luminance.ui.hazard.HazardActivity
+import com.example.luminance.ui.settings.SettingsActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.Manifest
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 
 /**
  * VisionActivity
@@ -47,6 +60,7 @@ class VisionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityVisionBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
+        checkAndRequestPermissions()
 
         setupBottomNav()
         setupMicButton()
@@ -59,6 +73,7 @@ class VisionActivity : AppCompatActivity() {
         // inferenceManager.result.observe(this) { result ->
         //     updateGuidanceText(result.guidanceMessage)
         // }
+
     }
 
     override fun onResume() {
@@ -98,25 +113,40 @@ class VisionActivity : AppCompatActivity() {
     // 하단 네비게이션
     // ───────────────────────────────────────────────────────────
 
+    // ── 하단 네비게이션 ─────────────────────────────────────────
+    /**
+     * 핵심 수정 포인트:
+     * - 각 Activity에서 setSelectedItemId()로 현재 탭을 표시
+     * - Intent에 FLAG_ACTIVITY_REORDER_TO_FRONT 사용 → 백스택 중복 방지
+     * - HazardActivity 자신 탭은 아무 동작 안 함 (중복 생성 방지)
+     */
     private fun setupBottomNav() {
-        binding.bottomNav.selectedItemId = com.example.luminance.R.id.nav_vision
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
 
-        binding.bottomNav.setOnItemSelectedListener { item ->
+        // 현재 화면 탭 선택 표시
+        bottomNav.selectedItemId = R.id.nav_vision
+
+        bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                com.example.luminance.R.id.nav_vision -> true
-                com.example.luminance.R.id.nav_hazard -> {
+                R.id.nav_hazard -> {
                     startActivity(
-                        android.content.Intent(this,
-                            com.example.luminance.ui.hazard.HazardActivity::class.java)
+                        Intent(this, HazardActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                        }
                     )
-                    false
+                    true
                 }
-                com.example.luminance.R.id.nav_settings -> {
+                R.id.nav_vision -> {
+                    true
+                }
+                R.id.nav_settings -> {
                     startActivity(
-                        android.content.Intent(this,
-                            com.example.luminance.ui.settings.SettingsActivity::class.java)
+                        Intent(this, SettingsActivity::class.java).apply {
+                            addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                        }
                     )
-                    false
+                    overridePendingTransition(0, 0)
+                    true
                 }
                 else -> false
             }
@@ -135,4 +165,71 @@ class VisionActivity : AppCompatActivity() {
             // TODO: 음성 명령 인식 연동
         }
     }
+
+    private val permissions = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
+
+    private val permissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { result ->
+
+            val deniedPermissions = result.filterValues { !it }.keys
+
+            if (deniedPermissions.isNotEmpty()) {
+                showPermissionDialog(deniedPermissions)
+            }
+        }
+
+    private fun checkAndRequestPermissions() {
+
+        val deniedPermissions = permissions.filter {
+            ContextCompat.checkSelfPermission(
+                this,
+                it
+            ) != PackageManager.PERMISSION_GRANTED
+        }
+
+        if (deniedPermissions.isNotEmpty()) {
+            permissionLauncher.launch(deniedPermissions.toTypedArray())
+        }
+    }
+
+    private fun showPermissionDialog(deniedPermissions: Set<String>) {
+
+        val message = buildString {
+
+            if (Manifest.permission.CAMERA in deniedPermissions) {
+                append("• 카메라 권한이 없어 전방 위험 감지가 제한됩니다.\n")
+            }
+
+            if (Manifest.permission.RECORD_AUDIO in deniedPermissions) {
+                append("• 마이크 권한이 없어 음성 기능이 제한됩니다.\n")
+            }
+
+            if (Manifest.permission.ACCESS_FINE_LOCATION in deniedPermissions) {
+                append("• 위치 권한이 없어 길 안내 기능이 제한됩니다.\n")
+            }
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("권한 필요")
+            .setMessage(message)
+            .setPositiveButton("설정으로 이동") { _, _ ->
+
+                val intent = Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.fromParts("package", packageName, null)
+                )
+
+                startActivity(intent)
+            }
+            .setNegativeButton("닫기", null)
+            .show()
+    }
+
+
 }

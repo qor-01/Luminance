@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- ================================================ -->
 <!-- 화면 2: 위험 알림 화면 (activity_hazard.xml)     -->
+<!-- HA-002 퀵 액션 버튼 + HA-005 커스텀 지도 추가   -->
 <!-- ================================================ -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -37,7 +38,7 @@
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
-            <!-- 실시간 분석 표시 (애니메이션은 코드에서 처리) -->
+            <!-- 펄스 점 (애니메이션은 Activity에서 처리) -->
             <View
                 android:id="@+id/pulseDot"
                 android:layout_width="10dp"
@@ -48,12 +49,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="8dp"
                 android:text="실시간 분석"
                 android:textColor="#BA1A1A"
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.15" />
+
+            <!-- HA-002: TTS 토글 버튼 -->
+            <ImageButton
+                android:id="@+id/btnTtsToggle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_chip_blue"
+                android:contentDescription="음성 안내 토글"
+                android:src="@drawable/ic_volume_on"
+                app:tint="#0059BA"
+                android:padding="8dp"
+                android:layout_marginEnd="4dp" />
+
+            <!-- HA-002: 햅틱 토글 버튼 -->
+            <ImageButton
+                android:id="@+id/btnHapticToggle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_chip_blue"
+                android:contentDescription="진동 피드백 토글"
+                android:src="@drawable/ic_vibration_on"
+                app:tint="#0059BA"
+                android:padding="8dp"
+                android:layout_marginEnd="16dp" />
 
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -68,9 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:paddingTop="24dp">
+            android:padding="16dp">
 
             <!-- 상태 카드 -->
             <LinearLayout
@@ -111,7 +134,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <!-- 위험 카드 1: 즉시 대응 (빨간 왼쪽 바) -->
+            <!-- HA-003: 위험 카드 1 - 즉시 대응 (빨간) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -119,7 +142,6 @@
                 android:background="@drawable/bg_hazard_card_red"
                 android:orientation="horizontal">
 
-                <!-- 왼쪽 액센트 바 -->
                 <View
                     android:layout_width="6dp"
                     android:layout_height="match_parent"
@@ -164,7 +186,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 위험 카드 2: 가까움 (주황 왼쪽 바) -->
+            <!-- HA-003: 위험 카드 2 - 가까움 (주황) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -216,7 +238,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 위험 카드 3: 전방 (파란 왼쪽 바) -->
+            <!-- HA-003: 위험 카드 3 - 전방 (파란) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -268,6 +290,42 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- HA-005: 주변 위험 지도 섹션 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="주변 위험 지도"
+                    android:textColor="#191C1D"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- 확대 버튼 -->
+                <ImageButton
+                    android:id="@+id/btnExpandMap"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/bg_chip_blue"
+                    android:src="@drawable/ic_fullscreen"
+                    app:tint="#0059BA"
+                    android:padding="6dp"
+                    android:contentDescription="지도 전체화면" />
+            </LinearLayout>
+
+            <!-- HA-005: 커스텀 2D 지도 뷰 -->
+            <com.example.luminance.ui.hazard.CustomMapView
+                android:id="@+id/customMapView"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:layout_marginBottom="24dp" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -278,6 +336,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="#FFFFFF"
-        app:menu="@menu/bottom_nav_menu"/>
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
