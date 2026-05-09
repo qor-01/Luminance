@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Luminance" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#0059BA</item>
+        <item name="colorPrimaryVariant">#003F8A</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#0059BA</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+</resources>
